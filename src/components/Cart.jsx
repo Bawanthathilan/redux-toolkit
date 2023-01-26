@@ -1,19 +1,28 @@
 import productList from '../data/productList.json'
 import '../styles/cart.scss'
+import cartSlice from '../data/cartSlice'
+
+import { useDispatch, useSelector } from 'react-redux'
 
 const Cart = () => {
+
+  const { cartProductIds } = useSelector((state) => state.cart)
+  const cartProductData = productList.products.filter((product) => cartProductIds.includes(product.id))
+  const { removeFromCart } = cartSlice.actions
+  const dispatch = useDispatch()
+
   return (
     <div className="cart">
       <div className="cart-product">
         <h3 className="header">Items in cart</h3>
-        {productList.products.map((product) => (
+        {cartProductData.map((product) => (
           <div key={product.id} className="row">
             <img className="item-image" src={product.imageUrl} alt="product" />
 
             <div className="item-info">
               <h4>{product.name}</h4>
               <p className="text-truncate">{product.detail}</p>
-              <button className="btn btn-primary">
+              <button className="btn btn-primary" onClick={() => dispatch(removeFromCart(product.id))}>
                 <i className="bi bi-trash-fill" /> Remove Item
               </button>
             </div>
